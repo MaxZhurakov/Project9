@@ -1,147 +1,159 @@
 //HM_ex_1_7.05.2023
 #include <iostream>
-
+#include <string>
+#include <algorithm>
 using namespace std;
-struct Rectangle 
+struct Book 
 {
-	double width;
-	double height;
-	double x;
-	double y;
+    string title;
+    string author;
+    string publisher;
+    string genre;
 };
 
-void moveRectangle(Rectangle& rect, double offsetX, double offsetY) 
+void printBook(const Book& book) 
 {
-	rect.x += offsetX;
-	rect.y += offsetY;
+    cout << "Назва: " << book.title << endl;
+    cout << "Автор: " << book.author << endl;
+    cout << "Видавництво: " << book.publisher << endl;
+    cout << "Жанр: " << book.genre << endl;
+    cout << endl;
 }
 
-
-void resizeRectangle(Rectangle& rect, double newWidth, double newHeight) 
+void editBook(Book& book) 
 {
-	rect.width = newWidth;
-	rect.height = newHeight;
+    cout << "Введіть нову назву: ";
+    getline(cin >> ws, book.title);
+    cout << "Введіть нового автора: ";
+    getline(cin >> ws, book.author);
+    cout << "Введіть нове видавництво: ";
+    getline(cin >> ws, book.publisher);
+    cout << "Введіть новий жанр: ";
+    getline(cin >> ws, book.genre);
 }
 
-
-void printRectangle(const Rectangle& rect) 
+void printAllBooks(const Book library[], int size)
 {
-	std::cout << "Rectangle Details:" << std::endl;
-	std::cout << "Width: " << rect.width << std::endl;
-	std::cout << "Height: " << rect.height << std::endl;
-	std::cout << "Position (x, y): (" << rect.x << ", " << rect.y << ")" << std::endl;
+    cout << "Книги в бібліотеці:" << endl;
+    for (int i = 0; i < size; i++) {
+        cout << "Книга " << i + 1 << ":" << endl;
+        printBook(library[i]);
+    }
+}
+void searchByAuthor(const Book library[], int size, const std::string& author) 
+{
+    cout << "Книги автора " << author << ":" << endl;
+    bool found = false;
+    for (int i = 0; i < size; i++) 
+    {
+        if (library[i].author == author) 
+        {
+            printBook(library[i]);
+            found = true;
+        }
+    }
+    if (!found) 
+    {
+        cout << "Книги даного автора відсутні." << endl;
+    }
+
 }
 
+void searchByTitle(const Book library[], int size, const string& title) 
+{
+    cout << "Книги з назвою \"" << title << "\":" << endl;
+    bool found = false;
+    for (int i = 0; i < size; i++) {
+        if (library[i].title == title) {
+            printBook(library[i]);
+            found = true;
+        }
+    }
+    if (!found) 
+    {
+        cout << "Книги з такою назвою відсутні." << endl;
+    }
+}
+bool compareByTitle(const Book& book1, const Book& book2)
+{
+    return book1.title < book2.title;
+}
+bool compareByAuthor(const Book& book1, const Book& book2) 
+{
+    return book1.author < book2.author;
+}
+bool compareByPublisher(const Book& book1, const Book& book2) 
+{
+    return book1.publisher < book2.publisher;
+}
+void sortBooksByTitle(Book library[], int size) 
+{
+    sort(library, library + size, compareByTitle);
+}
 
+void sortBooksByAuthor(Book library[], int size)
+{
+    sort(library, library + size, compareByAuthor);
+}
+void sortBooksByPublisher(Book library[], int size) 
+{
+    sort(library, library + size, compareByPublisher);
+}
+void removeBookByCriteria(Book library[], int& size, const std::string& criteria)
+{
+    int removedCount = 0;
+    for (int i = 0; i < size; i++) 
+    {
+        if (library[i].title == criteria || library[i].author == criteria ||
+            library[i].publisher == criteria || library[i].genre == criteria) {
+            removedCount++;
+        }
+        else 
+        {
+            library[i - removedCount] = library[i];
+        }
+    }
+    size -= removedCount;
+    cout << "Видалено " << removedCount << " книг(и) за вказаним критерієм." << endl;
+}
+void addNewBook(Book library[], int& size) 
+{
+    if (size >= 10)
+    {
+       cout << "Бібліотека заповнена. Неможливо додати нову книгу." << endl;
+        return;
+    Book newBook;
+    cout << "Введіть назву нової книги: ";
+    getline(cin >> ws, newBook.title);
+    cout << "Введіть автора нової книги: ";
+    getline(cin >> ws, newBook.author);
+    cout << "Введіть видавництво нової книги: ";
+    getline(cin >> ws, newBook.publisher);
+    cout << "Введіть жанр нової книги: ";
+    getline(cin >> ws, newBook.genre);
+    library[size] = newBook;
+    size++;
+    cout << "Нова книга успішно додана до бібліотеки." << endl;
+}
 int main() 
 {
-    Rectangle rect;
-	rect.width = 5.0;
-	rect.height = 3.0;
-	rect.x = 2.0;
-	rect.y = 1.0;
-	printRectangle(rect);
-	moveRectangle(rect, 3.0, -2.0);
-	resizeRectangle(rect, 7.0, 4.0);
-	printRectangle(rect);
-	return 0;
-}
-//HM_ex_2_7.05.2023
-#include <iostream>
-#include <cmath>
-using namespace std;
-struct Point 
-{
-	double x;
-	double y;
-};
-double calculateDistance(const Point& p1, const Point& p2) 
-{
-	double distance = sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2));
-	return distance;
-}
-int main() 
-{
-	Point p1, p2;
-	p1.x = 2.0;
-	p1.y = 3.0;
-	p2.x = -1.0;
-	p2.y = 5.0;
-	double distance = calculateDistance(p1, p2);
-	std::cout << "Distance between the two points: " << distance << std::endl;
-	return 0;
-}
-//HM_ex_3_7.05.2023
-#include <iostream>
-using namespace std;
-struct Fraction {
-	int numerator;   // чисельник
-	int denominator; // знаменник
-};
-// функція для знаходження найбільшого спільного дільника двох чисел
-int gcd(int a, int b)
-{
-	if (b == 0)
-	{
-		return a;
-	}
-	return gcd(b, a % b);
-}
-// функція для скорочення дробу
-void simplify(Fraction& f) 
-{
-	int divisor = gcd(f.numerator, f.denominator);
-	f.numerator /= divisor;
-	f.denominator /= divisor;
-}
-// функція для перетворення неправильного дробу на простий
-void toProper(Fraction& f) 
-{
-	if (f.numerator >= f.denominator) 
-	{
-		int whole = f.numerator / f.denominator;
-		f.numerator -= whole * f.denominator;
-		f.numerator %= f.denominator;
-		f.numerator += whole * f.denominator;
-	}
-}
-// функція для додавання двох дробів
-Fraction add(Fraction f1, Fraction f2)
-{
-	Fraction result;
-	result.numerator = f1.numerator * f2.denominator + f2.numerator * f1.denominator;
-	result.denominator = f1.denominator * f2.denominator;
-	simplify(result);
-	toProper(result);
-	return result;
-}
-// функція для віднімання двох дробів
-Fraction subtract(Fraction f1, Fraction f2) 
-{
-	Fraction result;
-	result.numerator = f1.numerator * f2.denominator - f2.numerator * f1.denominator;
-	result.denominator = f1.denominator * f2.denominator;
-	simplify(result);
-	toProper(result);
-	return result;
-}
-// функція для множення двох дробів
-Fraction multiply(Fraction f1, Fraction f2) 
-{
-	Fraction result;
-	result.numerator = f1.numerator * f2.numerator;
-	result.denominator = f1.denominator * f2.denominator;
-	simplify(result);
-	toProper(result);
-	return result;
-}
-// функція для ділення двох дробів
-Fraction divide(Fraction f1, Fraction f2) 
-{
-	Fraction result;
-	result.numerator = f1.numerator * f2.denominator;
-	result.denominator = f1.denominator * f2.numerator;
-	simplify(result);
-	toProper(result);
-	return result;
+    Book library[10];
+    int size = 0;
+    // Додавання початкових книг до бібліотеки (для прикладу)
+    Book book1 = { "Книга 1", "Автор 1", "Видавництво 1", "Жанр 1" };
+    Book book2 = { "Книга 2", "Автор 2", "Видавництво 2", "Жанр 2" };
+    library[size++] = book1;
+    library[size++] = book2;
+    // Взаємодія з бібліотекою
+    addNewBook(library, size);
+    editBook(library[0]);
+    printAllBooks(library, size);
+    searchByAuthor(library, size, "Автор 1");
+    searchByTitle(library, size, "Книга 2");
+    sortBooksByTitle(library, size);
+    sortBooksByAuthor(library, size);
+    sortBooksByPublisher(library, size);
+    removeBookByCriteria(library, size, "Жанр 2");
+    printAllBooks(library, size);
+    return 0;
 }
